@@ -42,21 +42,20 @@ func execute(c string) {
 			cells[ptr]--
 		case ".":
 			fmt.Print(string(rune(cells[ptr])))
-			// fmt.Println(cells[ptr], "ptr:", ptr)
 		case ",":
 			var i int
 			fmt.Scanf("%d", &i)
 			cells[ptr] = i
 		case "[":
 			for cells[ptr] != 0 {
-				closeindex, err := getCloseIndex(i, c)
+				closeindex, err := getCloseIndex(i+1, c)
 				if err != nil {
 					log.Fatal(err)
 				}
 				execute(c[i+1 : closeindex])
 			}
 			if cells[ptr] == 0 {
-				closeindex, err := getCloseIndex(i, c)
+				closeindex, err := getCloseIndex(i+1, c)
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -70,9 +69,15 @@ func execute(c string) {
 
 func getCloseIndex(open int, c string) (int, error) {
 	// TODO:handle nested loops
+	count := 0
 	for i := open; i < len(c); i++ {
-		if string(c[i]) == "]" {
+
+		if string(c[i]) == "]" && count == 0 {
 			return i, nil
+		} else if string(c[i]) == "[" {
+			count++
+		} else if string(c[i]) == "]" {
+			count--
 		}
 
 	}
